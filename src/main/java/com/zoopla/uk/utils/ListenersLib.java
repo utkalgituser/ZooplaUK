@@ -15,10 +15,10 @@ import org.testng.Reporter;
 import com.zoopla.uk.base.TestBase;
 
 public class ListenersLib extends TestBase implements ITestListener {
-	
+
 	TestUtils testUtils;
 	private static final Logger log = Logger.getLogger(ListenersLib.class.getName());
-	
+
 	public void onTestStart(ITestResult result) {
 		// TODO Auto-generated method stub
 		log.debug("Test started");
@@ -44,27 +44,31 @@ public class ListenersLib extends TestBase implements ITestListener {
 
 	public void onTestFailure(ITestResult result) {
 		try {
-			testUtils=new TestUtils(driver);
-			// returns method name
-			String methodName = result.getName();
-			if (!result.isSuccess()) {
-				// File with current date and time
-				File destFile = new File(ScreenShotLib.screenshotFolder + "/failure_screenshot/" + methodName + "_"
-						+ testUtils.getDateformatter().format(testUtils.getCalendar()) + ".png");
-				TakesScreenshot ts = (TakesScreenshot) driver;
-				File srcFile = ts.getScreenshotAs(OutputType.FILE);
-				try {
-					FileUtils.copyFile(srcFile, destFile);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			if (driver != null) {
+				testUtils = new TestUtils(driver);
+				// returns method name
+				String methodName = result.getName();
+				if (!result.isSuccess()) {
+					// File with current date and time
+					File destFile = new File(ScreenShotLib.screenshotFolder + "/failure_screenshot/" + methodName + "_"
+							+ testUtils.getDateformatter().format(testUtils.getCalendar()) + ".png");
+					TakesScreenshot ts = (TakesScreenshot) driver;
+					File srcFile = ts.getScreenshotAs(OutputType.FILE);
+					try {
+						FileUtils.copyFile(srcFile, destFile);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					// this will helps to link the screen shot to the report
+					Reporter.log("<a href='" + destFile.getAbsolutePath() + "'><img src='" + destFile.getAbsolutePath()
+							+ "'height='100''width='100'/></a>");
+					logDebug("Screen shot taken during failue " + destFile);
+					logDebug("Screen shot taken during failue " + destFile);
+					logDebug("test failed " + result.getMethod().getMethodName());
+				} else {
+					throw new NullWebDriverException("Driver instance is null");
 				}
-				// this will helps to link the screen shot to the report
-				Reporter.log("<a href='" + destFile.getAbsolutePath() + "'><img src='" + destFile.getAbsolutePath()
-						+ "'height='100''width='100'/></a>");
-				logDebug("Screen shot taken during failue " + destFile);
-				logDebug("Screen shot taken during failue " + destFile);
-				logDebug("test failed " + result.getMethod().getMethodName());
 			}
 		} catch (Exception e) {
 			System.out.println("failed to take screen shot in case of test failed");
@@ -87,11 +91,11 @@ public class ListenersLib extends TestBase implements ITestListener {
 	}
 
 	public void onStart(ITestContext context) {
-		logDebug("test started " + context.getName());
+		logDebug("Started " + context.getName());
 	}
 
 	public void onFinish(ITestContext context) {
-		logDebug("test finshed " + context.getName());
+		logDebug("Finshed " + context.getName());
 	}
 
 }

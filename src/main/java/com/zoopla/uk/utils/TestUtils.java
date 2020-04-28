@@ -1,6 +1,7 @@
 package com.zoopla.uk.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
@@ -30,7 +31,11 @@ public class TestUtils {
 	public static long PAGE_LOAD_TIMEOUT = 300;
 	public static long IMPLICIT_WAIT_0 = 0;
 	public static long IMPLICIT_WAIT_20 = 300;
-
+	
+	public TestUtils(WebDriver driver) {
+		
+	}
+	
 	/**
 	 * 
 	 * @param driver
@@ -42,7 +47,11 @@ public class TestUtils {
 		driver.manage().timeouts().pageLoadTimeout(PAGE_LOAD_TIMEOUT, TimeUnit.SECONDS);
 		log.info("finished basic setup");
 	}
-
+	
+	public Date getCalendar() {
+		return new Date();
+	}
+	
 	/**
 	 * 
 	 * @param driver
@@ -57,7 +66,22 @@ public class TestUtils {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @param driver accepts webDriver instance as argument 
+	 * @return	returns a boolean value based on visibility condition
+	 * @param titleToMatch	matched with actual title from web page
+	 */
+	public boolean verifyTitle(WebDriver driver, String titleToMatch) {
+		boolean isDisplayed = false;
+		if (driver.getTitle().equalsIgnoreCase(titleToMatch)) {
+			isDisplayed = true;
+			log.debug("Title match is success and changing status to "+isDisplayed);
+		}
+		return isDisplayed;
+	}
+	
 	/**
 	 * 
 	 * @param driver
@@ -99,7 +123,7 @@ public class TestUtils {
 	 * @return simple date format in the form of "dd_mm_yyyy_hh_mm_ss.S".
 	 */
 	public SimpleDateFormat getDateformatter() {
-		return new SimpleDateFormat("dd_mm_yyyy_hh_mm_ss.S");
+		return new SimpleDateFormat("dd_MM_yyyy_hh_mm_ss.S");
 	}
 
 	// ************************* JAVA SCRIPT *************************
@@ -126,13 +150,9 @@ public class TestUtils {
 	 *            accepts Web element instance as argument.
 	 * 
 	 */
-	public void scrollToLocationByJavaScript(WebDriver driver, WebElement element) {
+	public void scrollToLocationByJavaScriptAndClick(WebDriver driver, WebElement element) {
 		if (driver instanceof JavascriptExecutor) {
 			JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-			// String js = "arguments[0].style.height='auto';
-			// arguments[0].style.visibility='visible';";
-			// jsExecutor.executeScript("arguments[0].click();", priceLink);
-			// jsExecutor.executeScript(js, priceLink);
 			jsExecutor.executeScript("window.scrollTo(0," + element.getLocation().y + ")");
 			jsExecutor.executeScript("window.scrollTo(0," + element.getLocation().x + ")");
 			element.click();
@@ -143,15 +163,13 @@ public class TestUtils {
 	 * 
 	 * @param driver
 	 *            accepts WebDriver instance as argument.
-	 * @param script
-	 *            accepts script for java script to execute.
 	 * @param element
 	 *            accepts Web element instance as argument
 	 */
-	public void javaScriptExecutor(WebDriver driver, String script, WebElement element) {
+	public void javaScriptExecutorClick(WebDriver driver, WebElement element) {
 		JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-		jsExecutor.executeScript(script, element);
-		log.info("completed javaScriptExecutor");
+		jsExecutor.executeScript("arguments[0].click();", element);		
+		log.info("Completed javaScriptExecutor click operation");
 	}
 
 	/**
@@ -187,7 +205,7 @@ public class TestUtils {
 	 *            accepts WebDriver instance as argument. this method can be used to
 	 *            scroll to top of the page
 	 */
-	public static void scrollToTopOfPage(WebDriver driver) {
+	public void scrollToTopOfPage(WebDriver driver) {
 
 		((JavascriptExecutor) driver).executeScript("window.scrollTo(document.body.scrollHeight,0);");
 
@@ -201,7 +219,7 @@ public class TestUtils {
 	 *            accepts Web element instance as argument. this method can be used
 	 *            to scroll to top of the page
 	 */
-	public static void toElement(WebDriver driver, WebElement element) {
+	public void javaScriptScrollIntoViewElement(WebDriver driver, WebElement element) {
 		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
 	}
 
@@ -291,11 +309,9 @@ public class TestUtils {
 		WebElement selWb = driver.findElement(By.xpath(selBoxXpath));
 		Select sel = new Select(selWb);
 		sel.selectByIndex(index);
-
 	}
 
 	public void select(WebDriver driver, String selBoxXpath, String visibleText) {
-
 		WebElement selWb = driver.findElement(By.xpath(selBoxXpath));
 		Select sel = new Select(selWb);
 		sel.selectByVisibleText(visibleText);
@@ -318,7 +334,7 @@ public class TestUtils {
 		alt.dismiss();
 	}
 
-	// Scroll down the webpage by 200 pixels
+	// Scroll down the web page by 200 pixels
 	public void scrollDown(WebDriver driver) {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("window.scrollBy(0,200)");
@@ -340,7 +356,6 @@ public class TestUtils {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	public void actionsEscape(WebDriver driver) {
@@ -354,7 +369,6 @@ public class TestUtils {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	public void switchToDefaultContent(WebDriver driver, String xpath) {
@@ -389,7 +403,7 @@ public class TestUtils {
 	 *            This value depends what you want replace with real time
 	 * @return this return of of By, to use in findElement()
 	 */
-	public static By createDynamicXpath(String xpath, String dataToReplace) {
+	public By createDynamicXpath(String xpath, String dataToReplace) {
 		String rawXpath = xpath.replaceAll("$replace_with$", dataToReplace);
 		return By.xpath(rawXpath);
 	}
@@ -412,7 +426,7 @@ public class TestUtils {
 	 * 
 	 * @param options
 	 *            this method accepts ChromeOptions as argument and used to disable
-	 *            image loading on Firefox browser
+	 *            image loading on firefox browser
 	 */
 	public void disableImg(FirefoxOptions options) {
 		FirefoxProfile profile = new FirefoxProfile();

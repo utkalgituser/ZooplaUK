@@ -31,7 +31,7 @@ public class ConfigFileRead {
 			prop = new Properties();
 			prop.load(new FileReader(configFile));
 			// log.debug("key is " + key);
-			value = prop.getProperty(key);
+			value = prop.getProperty(key).toString();
 			if (value == null) {
 				throw new EmptyPropretyException(key, configFile.getAbsolutePath().toString());
 			} else {

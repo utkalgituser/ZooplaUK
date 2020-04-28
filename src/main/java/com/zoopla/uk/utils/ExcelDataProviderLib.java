@@ -17,8 +17,9 @@ import com.zoopla.uk.base.TestBase;
 /**
  * 
  * @author UTKAL
- *			
+ * 
  */
+
 public class ExcelDataProviderLib extends TestBase {
 	private Object[][] excelData;
 	private Workbook wb;
@@ -26,6 +27,12 @@ public class ExcelDataProviderLib extends TestBase {
 
 	private static final Logger log = Logger.getLogger(ExcelDataProviderLib.class.getName());
 
+	/**
+	 * this method reads the sheet from excel and return a two dimensional object
+	 * array.
+	 * 
+	 * @return return a two dimensional object array.
+	 */
 	@DataProvider(name = "getDataFromExcel")
 	public Object[][] getDataFromExcel() {
 
@@ -41,31 +48,23 @@ public class ExcelDataProviderLib extends TestBase {
 			log.debug("last cell number is " + cellCount);
 			excelData = new Object[rowCount - 1][cellCount];
 			for (int i = 1; i < rowCount; i++) {
-				// System.out.println("row is " + i);
 				for (int j = 0; j < cellCount - 1; j++) {
 					Row r = sh.getRow(i);
-					// System.out.println("column is " + j);
 					String value = r.getCell(j).getStringCellValue();
 					log.debug("Cell value is " + value);
-					// [i - 1] because needs to start from 0, otherwise first
-					// run value will be null
 					excelData[i - 1][j] = value;
-					// System.out.println("j is " + j);
 				}
 			}
-			log.debug("Excel read complete------------------");
+			log.debug("Excel read complete ------------------");
 		} catch (IOException e) {
 			e.printStackTrace();
-			log.debug("XXXXXXXXXXXXX Smoething wrong");
+			log.error("Excel read/write error....");
 			return null;
 		} catch (EncryptedDocumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			try {
@@ -74,6 +73,7 @@ public class ExcelDataProviderLib extends TestBase {
 				log.debug("finally block in data provider");
 			} catch (Exception e) {
 				e.printStackTrace();
+				log.error("Issue with excel please check whether sheet is saved and closed");
 			}
 		}
 		return excelData;

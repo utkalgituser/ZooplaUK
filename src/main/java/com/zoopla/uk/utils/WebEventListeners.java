@@ -134,7 +134,7 @@ public class WebEventListeners extends TestBase implements WebDriverEventListene
 
 	public void afterGetText(WebElement arg0, WebDriver arg1, String arg2) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void afterSwitchToWindow(String arg0, WebDriver arg1) {
@@ -149,15 +149,22 @@ public class WebEventListeners extends TestBase implements WebDriverEventListene
 
 	public void beforeGetText(WebElement arg0, WebDriver arg1) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void beforeSwitchToWindow(String arg0, WebDriver arg1) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	public void logInfo(String data) {
+		log.info(data);
+		if (isrpoerterLogRequired) {
+			Reporter.log(data);
+		}
+	}
+	
+	public void logDebug(String data) {
 		log.info(data);
 		if (isrpoerterLogRequired) {
 			Reporter.log(data);

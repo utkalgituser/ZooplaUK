@@ -3,6 +3,7 @@ package com.zoopla.uk.base;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.varia.NullAppender;
 import org.openqa.selenium.WebDriver;
@@ -11,7 +12,6 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.testng.Reporter;
-import org.testng.log4testng.Logger;
 
 import com.zoopla.uk.utils.ConfigFileRead;
 import com.zoopla.uk.utils.TestUtils;
@@ -20,9 +20,8 @@ import com.zoopla.uk.utils.WebEventListeners;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 /**
- * @author UTKAL 
- * 		This abstract base file for driver creation and is going to extended to
- *         other files.
+ * @author UTKAL This abstract base file for driver creation and is going to
+ *         extended to other files.
  */
 public abstract class TestBase {
 	public WebDriver driver;
@@ -31,19 +30,25 @@ public abstract class TestBase {
 	public static boolean isrpoerterLogRequired;
 	public static String OS;
 
-	private static final Logger log = Logger.getLogger(TestBase.class);
+	private static final Logger log = Logger.getLogger(TestBase.class.getName());
 
 	public TestBase() {
 		try {
+			// Log4j and reporter log setup
+			log.info("In TestBase Constructor and going to initialize log file");
 			BasicConfigurator.configure(new NullAppender());
-			PropertyConfigurator.configure(
-					System.getProperty("user.dir") + "/src/main/java/com/freecrm/qa/testdata/zoopla_UK_data.xlsx");
+			PropertyConfigurator
+					.configure(System.getProperty("user.dir") + "\\src\\main\\resouces\\Log4j.properties");
+			isrpoerterLogRequired = Boolean.valueOf(ConfigFileRead.readConfigFile("rpoerterLogStatus"));
+			logDebug("Reporterrr log status " + isrpoerterLogRequired);
 		} catch (Exception e) {
+			log.error("Failed in TestBase constructor");
 			e.printStackTrace();
 		}
 	}
 
 	public void initialize() {
+		log.info("Going to created webdriver instance and webevent lister for logging");
 		try {
 			if ((ConfigFileRead.readConfigFile("browser")).equalsIgnoreCase("chrome")) {
 				WebDriverManager.chromedriver().setup();
@@ -98,6 +103,5 @@ public abstract class TestBase {
 		if (isrpoerterLogRequired) {
 			Reporter.log(data, true);
 		}
-
 	}
 }
