@@ -20,8 +20,7 @@ public class ListenersLib extends TestBase implements ITestListener {
 	private static final Logger log = Logger.getLogger(ListenersLib.class.getName());
 
 	public void onTestStart(ITestResult result) {
-		// TODO Auto-generated method stub
-		log.debug("Test started");
+		logDebug("************** Test case " + result.getName() + " started ************** ");
 	}
 
 	public void onTestSuccess(ITestResult result) {
@@ -71,9 +70,8 @@ public class ListenersLib extends TestBase implements ITestListener {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("failed to take screen shot in case of test failed");
+			log.error("Failed to take screenshot.");
 			e.printStackTrace();
-			log.error("failed in screen shot");
 		}
 	}
 
@@ -91,11 +89,17 @@ public class ListenersLib extends TestBase implements ITestListener {
 	}
 
 	public void onStart(ITestContext context) {
-		logDebug("Started " + context.getName());
+		logDebug("<<<<<<<<<<<<<<<< Execution Started " + context.getName() + " >>>>>>>>>>>>>>>>> ");
 	}
 
 	public void onFinish(ITestContext context) {
-		logDebug("Finshed " + context.getName());
+		logDebug("<<<<<<<<<<<<<<<< TEST EXECUTION FINISHED " + context.getName() + " >>>>>>>>>>>>>>>>> ");
 	}
 
+	public void logDebug(String data) {
+		log.debug(data);
+		if (isrpoerterLogRequired) {
+			Reporter.log(data, true);
+		}
+	}
 }

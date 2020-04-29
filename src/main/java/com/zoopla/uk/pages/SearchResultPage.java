@@ -1,9 +1,10 @@
 package com.zoopla.uk.pages;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
@@ -19,7 +20,6 @@ import org.openqa.selenium.support.PageFactory;
 public class SearchResultPage {
 	private static final Logger log = Logger.getLogger(SearchResultPage.class.getName());
 
-	private static final String propPriceCss = "div.listing-results-right clearfix>a.listing-results-price text-price";
 	private static final String propPricesXpath = "//div[@class='listing-results-right clearfix']/a[@class='listing-results-price text-price']";
 
 	@FindBy(css = "div#content>div>h1")
@@ -76,10 +76,29 @@ public class SearchResultPage {
 			if (priceWithoutCurrency != null && !priceWithoutCurrency.equalsIgnoreCase("")) {
 				priceList.add(Integer.parseInt(priceWithoutCurrency));
 			}
+			// To sort a list in ascending order using sort method available in Collections
+			// class
 			Collections.sort(priceList);
 			isSame = true;
 		}
 		log.debug("Price list after sort is " + priceList);
+		return isSame;
+	}
+
+	public boolean clickOnPropPriceAndVerifyAgent(WebDriver driver, String propertylistingnumber) {
+		log.debug("Property to look is on " + propertylistingnumber + ", list.");
+		boolean isSame = false;
+		try {
+			List<WebElement> prices = driver.findElements(By.xpath(propPricesXpath));
+			log.debug("Price list size is " + prices.size());
+			WebElement priceLink = prices.get(Integer.parseInt(propertylistingnumber.toString()));
+			String listingHref = priceLink.getAttribute("href");
+			log.debug("listingHref is " + listingHref);
+			priceLink.click();
+			
+		} catch (Exception e) {
+			log.error(e.getCause().toString());
+		}
 		return isSame;
 	}
 }

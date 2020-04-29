@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -24,7 +24,7 @@ public class ExcelDataProviderLib extends TestBase {
 	private Object[][] excelData;
 	private Workbook wb;
 	private FileInputStream fis;
-
+	private DataFormatter dataFormatter;
 	private static final Logger log = Logger.getLogger(ExcelDataProviderLib.class.getName());
 
 	/**
@@ -35,7 +35,6 @@ public class ExcelDataProviderLib extends TestBase {
 	 */
 	@DataProvider(name = "getDataFromExcel")
 	public Object[][] getDataFromExcel() {
-
 		try {
 			log.debug("In data provider library +++++++++++");
 			String filePath = System.getProperty("user.dir") + ConfigFileRead.readConfigFile("excelfilepath");
@@ -45,35 +44,36 @@ public class ExcelDataProviderLib extends TestBase {
 			Sheet sh = wb.getSheet(sheetName);
 			int rowCount = sh.getLastRowNum() + 1;
 			int cellCount = sh.getRow(0).getLastCellNum();
-			log.debug("last cell number is " + cellCount);
+			log.debug("Last row number and last cell number are respectively " + rowCount + " , " + cellCount);
 			excelData = new Object[rowCount - 1][cellCount];
+			// DataFormatter class provides function to convert any type of cell to String format using formatCellValue method. 
+			dataFormatter = new DataFormatter();
 			for (int i = 1; i < rowCount; i++) {
-				for (int j = 0; j < cellCount - 1; j++) {
-					Row r = sh.getRow(i);
-					String value = r.getCell(j).getStringCellValue();
-					log.debug("Cell value is " + value);
+				for (int j = 0; j < cellCount; j++) {
+					// log.debug("i and j value are " + i + " , " + j);
+					Row row = sh.getRow(i);
+					String value = dataFormatter.formatCellValue(row.getCell(j));
+					log.info("Cell value is " + value);
 					excelData[i - 1][j] = value;
 				}
 			}
-			log.debug("Excel read complete ------------------");
+			log.debug("------------------ Excel read complete ------------------");
 		} catch (IOException e) {
-			e.printStackTrace();
 			log.error("Excel read/write error....");
+			log.error(e.getCause().toString());
 			return null;
 		} catch (EncryptedDocumentException e) {
-			e.printStackTrace();
-		} catch (InvalidFormatException e) {
-			e.printStackTrace();
+			log.error(e.getCause().toString());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getCause().toString());
 		} finally {
 			try {
 				fis.close();
 				wb.close();
-				log.debug("finally block in data provider");
+				log.debug("Finally block in data provider. Excel Sheet closed");
 			} catch (Exception e) {
-				e.printStackTrace();
 				log.error("Issue with excel please check whether sheet is saved and closed");
+				log.error(e.getCause().toString());
 			}
 		}
 		return excelData;

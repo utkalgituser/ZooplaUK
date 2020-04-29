@@ -44,13 +44,23 @@ public class SearchPropertyTest extends TestBase {
 		sa.assertAll();
 	}
 	
-	@Test(enabled = true, description = "This test is to get all property price", dataProviderClass = ExcelDataProviderLib.class, dataProvider = "getDataFromExcel")
+	@Test(enabled = false, description = "This test is to get all property price", dataProviderClass = ExcelDataProviderLib.class, dataProvider = "getDataFromExcel")
 	public void searchPropertyAndPrintAllPricesTest(String areaName, String propertylistingnumber) {
 		SoftAssert sa = new SoftAssert();
 		sa.assertTrue(testUtils.verifyTitle(driver, ConfigFileRead.readConfigFile("homepage_title")));
 		searchResultPage=homePage.enterSearchText(driver, areaName);
 		sa.assertTrue(searchResultPage.verifySearchResultHeaderText(driver, areaName));
 		sa.assertTrue(searchResultPage.getAllPropPrices(driver));
+		sa.assertAll();
+	}
+	
+	@Test(enabled = true, description = "This test is to get all property price", dataProviderClass = ExcelDataProviderLib.class, dataProvider = "getDataFromExcel")
+	public void openAnyPropAndVerifyAgentDetailsTest(String areaName, String propertylistingnumber) {
+		SoftAssert sa = new SoftAssert();
+		sa.assertTrue(testUtils.verifyTitle(driver, ConfigFileRead.readConfigFile("homepage_title")));
+		searchResultPage=homePage.enterSearchText(driver, areaName);
+		sa.assertTrue(searchResultPage.verifySearchResultHeaderText(driver, areaName));
+		searchResultPage.clickOnPropPriceAndVerifyAgent(driver, propertylistingnumber);
 		sa.assertAll();
 	}
 	
