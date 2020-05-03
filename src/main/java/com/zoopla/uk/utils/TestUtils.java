@@ -90,8 +90,17 @@ public class TestUtils {
 	 *            accepts Web element instance as argument
 	 */
 	public void waitForVisibility(WebDriver driver, WebElement element) {
-		driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_0, TimeUnit.SECONDS);
-		new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOf(element));
+		try {
+			log.info("Waiting for element visibilty "+element);
+			driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_0, TimeUnit.SECONDS);
+			log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_0);
+			new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOf(element));
+			driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_20, TimeUnit.SECONDS);
+			log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_20);
+		}catch (Exception e) {
+			log.error(e.getCause().toString());
+		}
+
 	}
 
 	public void waitForLinkToAppear(WebDriver driver, String linkText) {
@@ -220,7 +229,15 @@ public class TestUtils {
 	 *            to scroll to top of the page
 	 */
 	public void javaScriptScrollIntoViewElement(WebDriver driver, WebElement element) {
-		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+
+		try {
+			((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+			log.info("scrolled to the target element " + element);
+		} catch (Exception e) {
+			log.error("Failed to scrolled to the element using Java script.");
+			log.error(e.getCause().toString());
+		}
+
 	}
 
 	/**
@@ -317,9 +334,9 @@ public class TestUtils {
 		sel.selectByVisibleText(visibleText);
 	}
 
-	public void select(WebDriver driver, WebElement selBoxWb, String visibleText) {
+	public void select(WebDriver driver, WebElement selBoxWb, String byValue) {
 		Select sel = new Select(selBoxWb);
-		sel.selectByVisibleText(visibleText);
+		sel.selectByVisibleText(byValue);
 	}
 
 	public void acceptAlert(WebDriver driver) {
@@ -434,4 +451,23 @@ public class TestUtils {
 		options.setProfile(profile);
 		options.setCapability(FirefoxDriver.PROFILE, profile);
 	}
+	
+	/**
+	 * 
+	 * @param url accepts URL in String format 
+	 * @param whichPartOfArray	After splitting the Url with "?", which part of String[] is required for further processing 
+	 * @return return a string. 
+	 */
+	public String splitAndExtractID(String url, int whichPartOfArray) {
+		String finalID=null;
+		try {
+			String[] part=url.split("\\?");
+			finalID=part[whichPartOfArray].replaceAll("\\D","");
+			log.debug("Final ID is "+finalID);
+		}catch (Exception e) {
+			log.error(e.getCause().toString());
+		}
+		return finalID;
+	}
+	
 }

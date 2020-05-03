@@ -8,7 +8,9 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 import com.zoopla.uk.base.TestBase;
+import com.zoopla.uk.pages.AgentsPage;
 import com.zoopla.uk.pages.HomePage;
+import com.zoopla.uk.pages.IndividualPropertyPage;
 import com.zoopla.uk.pages.SearchResultPage;
 import com.zoopla.uk.utils.ConfigFileRead;
 import com.zoopla.uk.utils.ExcelDataProviderLib;
@@ -23,13 +25,16 @@ public class SearchPropertyTest extends TestBase {
 	HomePage homePage;
 	TestUtils testUtils;
 	SearchResultPage searchResultPage;
-
+	IndividualPropertyPage individualPropertyPage;
+	AgentsPage agentsPage;
+	
 	private static final Logger log = Logger.getLogger(SearchPropertyTest.class.getName());
 
 	@BeforeMethod
 	public void setUp() {
-		log.info("Inside HomePage setup");
-		initialize();
+		log.info("<<<<<<<<<<<<<<<<<<<<<< Inside Before method setup >>>>>>>>>>>>>>>>>>>>>>");
+		baseSetup();
+		initializeDriver();
 		homePage = new HomePage(driver);
 		testUtils = new TestUtils(driver);
 		log.info("Setup completed");
@@ -57,10 +62,14 @@ public class SearchPropertyTest extends TestBase {
 	@Test(enabled = true, description = "This test is to get all property price", dataProviderClass = ExcelDataProviderLib.class, dataProvider = "getDataFromExcel")
 	public void openAnyPropAndVerifyAgentDetailsTest(String areaName, String propertylistingnumber) {
 		SoftAssert sa = new SoftAssert();
-		sa.assertTrue(testUtils.verifyTitle(driver, ConfigFileRead.readConfigFile("homepage_title")));
+		sa.assertTrue(testUtils.verifyTitle(driver, ConfigFileRead.readConfigFile("homepage_title")),"Title mismatch");
 		searchResultPage=homePage.enterSearchText(driver, areaName);
 		sa.assertTrue(searchResultPage.verifySearchResultHeaderText(driver, areaName));
-		searchResultPage.clickOnPropPriceAndVerifyAgent(driver, propertylistingnumber);
+		individualPropertyPage=searchResultPage.clickOnPropPriceforPropDetails(driver, propertylistingnumber,TestBase.listingHrefs);
+		sa.assertTrue(individualPropertyPage.verifyProperty(driver, listingHrefs),"Assertion Failed");
+		agentsPage=individualPropertyPage.clickOnAgentIconAndVerify(driver);
+		sa.assertTrue(agentsPage.verifyLandingPage(driver),"Assertion failed in verifying agent landing page is same as that of property listing");
+		sa.assertTrue(agentsPage.matchPropertyAvailableOnAgentsPage(driver, ConfigFileRead.readConfigFile("dropDownValue")),"Assertion failed as unable to find property listing on agent page");
 		sa.assertAll();
 	}
 	

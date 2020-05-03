@@ -1,5 +1,7 @@
 package com.zoopla.uk.base;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.BasicConfigurator;
@@ -28,11 +30,11 @@ public abstract class TestBase {
 	public WebEventListeners eventListeners;
 	public EventFiringWebDriver eventDriver;
 	public static boolean isrpoerterLogRequired;
-	public static String OS;
-
+	public static Map<String, String> listingHrefs;
 	private static final Logger log = Logger.getLogger(TestBase.class.getName());
+	private static String OS = System.getProperty("os.name").toLowerCase();
 
-	public TestBase() {
+	public void baseSetup() {
 		try {
 			// Log4j and reporter log setup
 			log.info("In TestBase Constructor and going to initialize log file");
@@ -47,8 +49,9 @@ public abstract class TestBase {
 		}
 	}
 
-	public void initialize() {
+	public void initializeDriver() {
 		log.info("Going to created webdriver instance and webevent lister for logging");
+		listingHrefs=new ConcurrentHashMap<>();
 		try {
 			if ((ConfigFileRead.readConfigFile("browser")).equalsIgnoreCase("chrome")) {
 				WebDriverManager.chromedriver().setup();

@@ -20,6 +20,7 @@ public class ListenersLib extends TestBase implements ITestListener {
 	private static final Logger log = Logger.getLogger(ListenersLib.class.getName());
 
 	public void onTestStart(ITestResult result) {
+		logDebug("");
 		logDebug("************** Test case " + result.getName() + " started ************** ");
 	}
 
@@ -76,7 +77,7 @@ public class ListenersLib extends TestBase implements ITestListener {
 	}
 
 	public void onTestSkipped(ITestResult result) {
-		logDebug("test skipped " + result.getMethod().getMethodName());
+		logDebug("Test skipped " + result.getMethod().getMethodName());
 		try {
 			// driver.get(ConfigFIleRead.urls);
 		} catch (Exception ex) {
@@ -89,11 +90,11 @@ public class ListenersLib extends TestBase implements ITestListener {
 	}
 
 	public void onStart(ITestContext context) {
-		logDebug("<<<<<<<<<<<<<<<< Execution Started " + context.getName() + " >>>>>>>>>>>>>>>>> ");
+		logDebug("<<<<<<<<<<<<<<<< TEST Execution Started " + context.getStartDate() + " >>>>>>>>>>>>>>>>> ");
 	}
 
 	public void onFinish(ITestContext context) {
-		logDebug("<<<<<<<<<<<<<<<< TEST EXECUTION FINISHED " + context.getName() + " >>>>>>>>>>>>>>>>> ");
+		logDebug("<<<<<<<<<<<<<<<< TEST EXECUTION FINISHED " + context.getEndDate() + " >>>>>>>>>>>>>>>>> ");
 	}
 
 	public void logDebug(String data) {
