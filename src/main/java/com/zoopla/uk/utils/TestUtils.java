@@ -339,18 +339,6 @@ public class TestUtils {
 		sel.selectByVisibleText(byValue);
 	}
 
-	public void acceptAlert(WebDriver driver) {
-		Alert alt = driver.switchTo().alert();
-		System.out.println(alt.getText());
-		alt.accept();
-	}
-
-	public void rejectAlert(WebDriver driver) {
-		Alert alt = driver.switchTo().alert();
-		System.out.println(alt.getText());
-		alt.dismiss();
-	}
-
 	// Scroll down the web page by 200 pixels
 	public void scrollDown(WebDriver driver) {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -369,19 +357,6 @@ public class TestUtils {
 		} else {
 			try {
 				throw new NullWebDriverException("Driver instance is null");
-			} catch (NullWebDriverException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void actionsEscape(WebDriver driver) {
-		if (driver != null) {
-			Actions act = new Actions(driver);
-			act.sendKeys(Keys.ESCAPE).perform();
-		} else {
-			try {
-				throw new NullWebDriverException("Driver instanace is null");
 			} catch (NullWebDriverException e) {
 				e.printStackTrace();
 			}
