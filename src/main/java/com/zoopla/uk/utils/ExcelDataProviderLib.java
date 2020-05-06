@@ -3,7 +3,8 @@ package com.zoopla.uk.utils;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,7 +26,7 @@ public class ExcelDataProviderLib extends TestBase {
 	private Workbook wb;
 	private FileInputStream fis;
 	private DataFormatter dataFormatter;
-	private static final Logger log = Logger.getLogger(ExcelDataProviderLib.class.getName());
+	private static final Logger log = LogManager.getLogger(ExcelDataProviderLib.class);
 
 	/**
 	 * this method reads the sheet from excel and return a two dimensional object
@@ -46,7 +47,8 @@ public class ExcelDataProviderLib extends TestBase {
 			int cellCount = sh.getRow(0).getLastCellNum();
 			log.debug("Last row number and last cell number are respectively " + rowCount + " , " + cellCount);
 			excelData = new Object[rowCount - 1][cellCount];
-			// DataFormatter class provides function to convert any type of cell to String format using formatCellValue method. 
+			// DataFormatter class provides function to convert any type of cell to String
+			// format using formatCellValue method.
 			dataFormatter = new DataFormatter();
 			for (int i = 1; i < rowCount; i++) {
 				for (int j = 0; j < cellCount; j++) {

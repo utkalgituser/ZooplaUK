@@ -4,10 +4,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.varia.NullAppender;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -32,15 +30,15 @@ public abstract class TestBase {
 	public EventFiringWebDriver eventDriver;
 	public static boolean isrpoerterLogRequired;
 	public static Map<String, String> listingHrefs;
-	private static final Logger log = Logger.getLogger(TestBase.class.getName());
+	private static final Logger log = LogManager.getLogger(TestBase.class);
 	private static String OS = System.getProperty("os.name").toLowerCase();
 
 	public void baseSetup() {
 		try {
 			// Log4j and reporter log setup
-			log.info("In TestBase Constructor and going to initialize log file");
+/*			log.info("In TestBase Constructor and going to initialize log file");
 			BasicConfigurator.configure(new NullAppender());
-			PropertyConfigurator.configure(System.getProperty("user.dir") + "\\src\\main\\resouces\\Log4j.properties");
+			PropertyConfigurator.configure(System.getProperty("user.dir") + "\\src\\main\\resouces\\Log4j.properties");*/
 			isrpoerterLogRequired = Boolean.valueOf(ConfigFileRead.readConfigFile("rpoerterLogStatus"));
 			logDebug("Reporterrr log status " + isrpoerterLogRequired);
 		} catch (Exception e) {

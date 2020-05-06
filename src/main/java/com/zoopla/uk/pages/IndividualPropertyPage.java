@@ -1,11 +1,9 @@
-/**
- * 
- */
 package com.zoopla.uk.pages;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -19,7 +17,9 @@ import com.zoopla.uk.utils.TestUtils;
  *
  */
 public class IndividualPropertyPage extends TestBase {
-	private static final Logger log = Logger.getLogger(IndividualPropertyPage.class.getName());
+
+	private static final Logger log = LogManager.getLogger(IndividualPropertyPage.class);
+
 	TestUtils testUtils;
 
 	private String currentUrl;

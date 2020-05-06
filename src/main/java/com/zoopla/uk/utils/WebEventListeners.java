@@ -1,6 +1,7 @@
 package com.zoopla.uk.utils;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
@@ -17,7 +18,7 @@ import com.zoopla.uk.base.TestBase;
 
 public class WebEventListeners extends TestBase implements WebDriverEventListener{
 
-	private static final Logger log = Logger.getLogger(WebEventListeners.class);
+	private static final Logger log = LogManager.getLogger(WebEventListeners.class);
 
 	public void beforeNavigateTo(String url, WebDriver driver) {
 		logInfo("Before navigating to: '" + url + "'");

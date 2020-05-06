@@ -8,7 +8,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -23,7 +24,8 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class TestUtils {
-	private static final Logger log = Logger.getLogger(TestUtils.class.getName());
+
+	private static final Logger log = LogManager.getLogger(TestUtils.class);
 
 	// Static variable for page load and implicit wait
 	public static long PAGE_LOAD_TIMEOUT = 30;

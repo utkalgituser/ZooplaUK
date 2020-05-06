@@ -5,7 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConfigFileRead {
 	/**
@@ -17,7 +18,7 @@ public class ConfigFileRead {
 
 	private static final File configFile;
 	private static Properties prop;
-	private static final Logger log = Logger.getLogger(ConfigFileRead.class.getName());
+	private static final Logger log = LogManager.getLogger(ConfigFileRead.class);
 
 	static {
 		// Get the value from properties file
@@ -51,16 +52,18 @@ public class ConfigFileRead {
 }
 
 class EmptyPropretyException extends Exception {
-	/**
-	 * 
-	 * This class is to generate empty property exception. Accepts 2 arguments, key
-	 * which is being searched in property file and filename as string format.
-	 * 
-	 */
-	private static final Logger log = Logger.getLogger(EmptyPropretyException.class.getName());
+	// This class is to generate custom empty property exception.
+
+	private static final Logger log = LogManager.getLogger(EmptyPropretyException.class);
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 
+	 * @param key        accepts key which needs to be searched in property file
+	 * @param configFile config file with absolute path
+	 * 
+	 */
 	EmptyPropretyException(String key, String configFile) {
 		super(key);
 		log.error("Error is fetching " + key + " ,please verify in " + configFile + " file");

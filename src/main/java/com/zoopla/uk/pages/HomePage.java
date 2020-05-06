@@ -1,6 +1,7 @@
 package com.zoopla.uk.pages;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -13,7 +14,7 @@ import com.zoopla.uk.utils.TestUtils;
 
 public class HomePage extends TestBase {
 
-	private static final Logger log = Logger.getLogger(HomePage.class.getName());
+	private static final Logger log = LogManager.getLogger(HomePage.class);
 	public TestUtils testUtils;
 
 	@FindBy(id = "search-input-location")
