@@ -1,6 +1,7 @@
 package com.zoopla.uk.searchproperty;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.Reporter;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -27,8 +28,8 @@ public class SearchPropertyTest extends TestBase {
 	SearchResultPage searchResultPage;
 	IndividualPropertyPage individualPropertyPage;
 	AgentsPage agentsPage;
-	
-	private static final Logger log = Logger.getLogger(SearchPropertyTest.class.getName());
+
+	private static final Logger log = LogManager.getLogger(SearchPropertyTest.class);
 
 	@BeforeMethod
 	public void setUp() {
@@ -44,35 +45,39 @@ public class SearchPropertyTest extends TestBase {
 	public void searchPropertyTest(String areaName, String propertylistingnumber) {
 		SoftAssert sa = new SoftAssert();
 		sa.assertTrue(testUtils.verifyTitle(driver, ConfigFileRead.readConfigFile("homepage_title")));
-		searchResultPage=homePage.enterSearchText(driver, areaName);
+		searchResultPage = homePage.enterSearchText(driver, areaName);
 		sa.assertTrue(searchResultPage.verifySearchResultHeaderText(driver, areaName));
 		sa.assertAll();
 	}
-	
+
 	@Test(enabled = false, description = "This test is to get all property price", dataProviderClass = ExcelDataProviderLib.class, dataProvider = "getDataFromExcel")
 	public void searchPropertyAndPrintAllPricesTest(String areaName, String propertylistingnumber) {
 		SoftAssert sa = new SoftAssert();
 		sa.assertTrue(testUtils.verifyTitle(driver, ConfigFileRead.readConfigFile("homepage_title")));
-		searchResultPage=homePage.enterSearchText(driver, areaName);
+		searchResultPage = homePage.enterSearchText(driver, areaName);
 		sa.assertTrue(searchResultPage.verifySearchResultHeaderText(driver, areaName));
 		sa.assertTrue(searchResultPage.getAllPropPrices(driver));
 		sa.assertAll();
 	}
-	
+
 	@Test(enabled = true, description = "This test is to get all property price", dataProviderClass = ExcelDataProviderLib.class, dataProvider = "getDataFromExcel")
 	public void openAnyPropAndVerifyAgentDetailsTest(String areaName, String propertylistingnumber) {
 		SoftAssert sa = new SoftAssert();
-		sa.assertTrue(testUtils.verifyTitle(driver, ConfigFileRead.readConfigFile("homepage_title")),"Title mismatch");
-		searchResultPage=homePage.enterSearchText(driver, areaName);
+		sa.assertTrue(testUtils.verifyTitle(driver, ConfigFileRead.readConfigFile("homepage_title")), "Title mismatch");
+		searchResultPage = homePage.enterSearchText(driver, areaName);
 		sa.assertTrue(searchResultPage.verifySearchResultHeaderText(driver, areaName));
-		individualPropertyPage=searchResultPage.clickOnPropPriceforPropDetails(driver, propertylistingnumber,TestBase.listingHrefs);
-		sa.assertTrue(individualPropertyPage.verifyProperty(driver, listingHrefs),"Assertion Failed");
-		agentsPage=individualPropertyPage.clickOnAgentIconAndVerify(driver);
-		sa.assertTrue(agentsPage.verifyLandingPage(driver),"Assertion failed in verifying agent landing page is same as that of property listing");
-		sa.assertTrue(agentsPage.matchPropertyAvailableOnAgentsPage(driver, ConfigFileRead.readConfigFile("dropDownValue")),"Assertion failed as unable to find property listing on agent page");
+		individualPropertyPage = searchResultPage.clickOnPropPriceforPropDetails(driver, propertylistingnumber,
+				TestBase.listingHrefs);
+		sa.assertTrue(individualPropertyPage.verifyProperty(driver, listingHrefs), "Assertion Failed");
+		agentsPage = individualPropertyPage.clickOnAgentIconAndVerify(driver);
+		sa.assertTrue(agentsPage.verifyLandingPage(driver),
+				"Assertion failed in verifying agent landing page is same as that of property listing");
+		sa.assertTrue(
+				agentsPage.matchPropertyAvailableOnAgentsPage(driver, ConfigFileRead.readConfigFile("dropDownValue")),
+				"Assertion failed as unable to find property listing on agent page");
 		sa.assertAll();
 	}
-	
+
 	@AfterMethod(alwaysRun = true)
 	public void tearDown() {
 		try {

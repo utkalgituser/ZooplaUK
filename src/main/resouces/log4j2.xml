@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO"
+	xmlns="https://logging.apache.org/log4j/2.0/config">
+	<Appenders>
+		<Console name="ConsoleAppender" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+		<!-- File name="FileAppender" fileName="application-${date:yyyyMMdd}.log" 
+			immediateFlush="false" append="true" -->
+		<File name="FileAppender" fileName="zooplaUK.log"
+			immediateFlush="true" append="true">
+			<PatternLayout
+				pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</File>
+	</Appenders>
+	<Loggers>
+		<!-- Logger name="uk.zoopla" level="debug"/ -->
+		<Root level="debug">
+			<AppenderRef ref="ConsoleAppender" />
+			<AppenderRef ref="FileAppender" />
+		</Root>
+	</Loggers>
+</Configuration>

@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -20,7 +21,7 @@ import com.zoopla.uk.utils.TestUtils;
  *         area.
  */
 public class SearchResultPage extends TestBase {
-	private static final Logger log = Logger.getLogger(SearchResultPage.class.getName());
+	private static final Logger log = LogManager.getLogger(SearchResultPage.class);
 
 	private static final String propPricesXpath = "//div[@class='listing-results-right clearfix']/a[@class='listing-results-price text-price']";
 	TestUtils testUtils;
