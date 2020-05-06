@@ -9,10 +9,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -28,9 +26,9 @@ public class TestUtils {
 	private static final Logger log = Logger.getLogger(TestUtils.class.getName());
 
 	// Static variable for page load and implicit wait
-	public static long PAGE_LOAD_TIMEOUT = 300;
+	public static long PAGE_LOAD_TIMEOUT = 30;
 	public static long IMPLICIT_WAIT_0 = 0;
-	public static long IMPLICIT_WAIT_20 = 300;
+	public static long IMPLICIT_WAIT_20 = 20;
 	
 	public TestUtils(WebDriver driver) {
 		
@@ -44,6 +42,7 @@ public class TestUtils {
 	public void basicTimeoutSetup(WebDriver driver) {
 		driver.manage().deleteAllCookies();
 		driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_20, TimeUnit.SECONDS);
+		log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_20);
 		driver.manage().timeouts().pageLoadTimeout(PAGE_LOAD_TIMEOUT, TimeUnit.SECONDS);
 		log.info("finished basic setup");
 	}
@@ -61,7 +60,10 @@ public class TestUtils {
 	public void explicitlyWaitXpath(WebDriver driver, By element) {
 		try {
 			driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_0, TimeUnit.SECONDS);
-			new WebDriverWait(driver, 20).until(ExpectedConditions.presenceOfElementLocated(element)); 
+			log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_0);
+			new WebDriverWait(driver, 20).until(ExpectedConditions.presenceOfElementLocated(element));
+			driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_20, TimeUnit.SECONDS);
+			log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_20);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -105,15 +107,20 @@ public class TestUtils {
 
 	public void waitForLinkToAppear(WebDriver driver, String linkText) {
 		driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_0, TimeUnit.SECONDS);
+		log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_0);
 		new WebDriverWait(driver, 20).until(ExpectedConditions.presenceOfElementLocated(By.linkText(linkText)));
+		driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_20, TimeUnit.SECONDS);
+		log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_20);
 	}
 
 	public void elementToBeclickable(WebDriver driver, WebElement element) {
 		if (driver != null) {
 			try {
 				driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_0, TimeUnit.SECONDS);
+				log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_0);
 				new WebDriverWait(driver, 20).until(ExpectedConditions.elementToBeClickable(element));
 				driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_20, TimeUnit.SECONDS);
+				log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_20);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

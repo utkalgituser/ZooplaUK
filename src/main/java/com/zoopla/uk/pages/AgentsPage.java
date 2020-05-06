@@ -25,8 +25,8 @@ public class AgentsPage extends TestBase {
 	TestUtils testUtils;
 	private static final String allListings = "//ul[@class='listing-results clearfix js-gtm-list']/li[starts-with(@id, 'listing_')]";
 
-	@FindBy(xpath = "//div[@class='clearfix agents-latest-listings']/a[0]")
-	private WebElement seeAllPropertyLnk;
+	/*@FindBy(xpath = "//div[@class='clearfix agents-latest-listings']/a[0]")
+	private WebElement seeAllPropertyLnk;*/
 
 	@FindBy(css = "div#content>div>h1>b")
 	private WebElement landingPageTxt;
@@ -39,9 +39,9 @@ public class AgentsPage extends TestBase {
 		testUtils = new TestUtils(driver);
 	}
 
-	public WebElement getSeeAllPropertyLnk() {
+	/*public WebElement getSeeAllPropertyLnk() {
 		return seeAllPropertyLnk;
-	}
+	}*/
 
 	public WebElement getLandingPageTxt() {
 		return landingPageTxt;
@@ -62,12 +62,13 @@ public class AgentsPage extends TestBase {
 
 	public boolean matchPropertyAvailableOnAgentsPage(WebDriver driver, String dropDownValue) {
 		boolean isSame = false;
-		testUtils.javaScriptScrollIntoViewElement(driver, getSeeAllPropertyLnk());
+		/*testUtils.javaScriptScrollIntoViewElement(driver, getSeeAllPropertyLnk());
 		getSeeAllPropertyLnk().click();
 		log.info("Clicked on see all properties link. Going to select number of property to be displayed is "
 				+ dropDownValue);
 		testUtils.select(driver, getSelectNumberOfPropertyDropdown(), dropDownValue);
-		log.info("Selected " + dropDownValue + " from drop down.");
+		log.info("Selected " + dropDownValue + " from drop down.");*/
+		testUtils.waitForVisibility(driver, getLandingPageTxt());
 		List<WebElement> allListingElements = driver.findElements(By.xpath(allListings));
 		log.debug("allListingElements size is " + allListingElements.size());
 		for (WebElement ele : allListingElements) {

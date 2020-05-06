@@ -10,6 +10,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.varia.NullAppender;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
@@ -39,24 +40,28 @@ public abstract class TestBase {
 			// Log4j and reporter log setup
 			log.info("In TestBase Constructor and going to initialize log file");
 			BasicConfigurator.configure(new NullAppender());
-			PropertyConfigurator
-					.configure(System.getProperty("user.dir") + "\\src\\main\\resouces\\Log4j.properties");
+			PropertyConfigurator.configure(System.getProperty("user.dir") + "\\src\\main\\resouces\\Log4j.properties");
 			isrpoerterLogRequired = Boolean.valueOf(ConfigFileRead.readConfigFile("rpoerterLogStatus"));
 			logDebug("Reporterrr log status " + isrpoerterLogRequired);
 		} catch (Exception e) {
-			log.error("Failed in TestBase constructor");
-			e.printStackTrace();
+			logError("Failed in TestBase constructor");
+			logError(e.getCause().toString());
 		}
 	}
 
 	public void initializeDriver() {
-		log.info("Going to created webdriver instance and webevent lister for logging");
-		listingHrefs=new ConcurrentHashMap<>();
+		log.info("Going to created webdriver instance and webevent listener for logging");
+		listingHrefs = new ConcurrentHashMap<>();
 		try {
 			if ((ConfigFileRead.readConfigFile("browser")).equalsIgnoreCase("chrome")) {
+				// This will reduce the chrome driver error logs
+				System.setProperty("webdriver.chrome.silentOutput", "true");
+				ChromeOptions chromeOptions=new ChromeOptions();
+				// this can be used to reduce log levels
+				// chromeOptions.addArguments("--log-level=3");
 				WebDriverManager.chromedriver().setup();
-				driver = new ChromeDriver();
-				log.debug("Driver is " + driver.toString());
+				driver = new ChromeDriver(chromeOptions);
+				logDebug("Driver is " + driver.toString());
 				driver.manage().window().maximize();
 				driver.manage().timeouts().implicitlyWait(TestUtils.IMPLICIT_WAIT_20, TimeUnit.SECONDS);
 				// driver.manage().timeouts().pageLoadTimeout(TestUtils.PAGE_LOAD_TIMEOUT,
@@ -66,8 +71,13 @@ public abstract class TestBase {
 				eventListeners = new WebEventListeners();
 				eventDriver.register(eventListeners);
 				driver = eventDriver;
-				log.debug("Chrome driver creation completed");
+				logDebug("Chrome driver creation completed");
 			} else if ((ConfigFileRead.readConfigFile("browser")).equalsIgnoreCase("firefox")) {
+				// Below 2 lines used to reduce Firefox log levels so that application log
+				// remain clean.
+				System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
+				System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE,
+						System.getProperty("user.dir") + "\\driverLogs.log");
 				WebDriverManager.firefoxdriver().setup();
 				driver = new FirefoxDriver();
 				driver.manage().window().maximize();
@@ -78,7 +88,7 @@ public abstract class TestBase {
 				eventListeners = new WebEventListeners();
 				eventDriver.register(eventListeners);
 				driver = eventDriver;
-				log.debug("firefox driver creation completed");
+				logDebug("firefox driver creation completed");
 			} else {
 				WebDriverManager.edgedriver().setup();
 				driver = new EdgeDriver();
@@ -90,19 +100,26 @@ public abstract class TestBase {
 				eventListeners = new WebEventListeners();
 				eventDriver.register(eventListeners);
 				driver = eventDriver;
-				log.debug("EdgeDriver creation completed");
+				logDebug("EdgeDriver creation completed");
 			}
 			driver.get(ConfigFileRead.readConfigFile("url"));
-			log.debug("Navigating to URL " + ConfigFileRead.readConfigFile("url"));
-			log.debug("Driver is " + driver.toString());
+			logDebug("Navigating to URL " + ConfigFileRead.readConfigFile("url"));
+			logDebug("Driver is " + driver.toString());
 		} catch (Exception e) {
-			log.error("Exception occured in driver init stage");
-			e.printStackTrace();
+			logError("Exception occured in driver init stage");
+			logError(e.getCause().toString());
 		}
 	}
 
 	public void logDebug(String data) {
 		log.debug(data);
+		if (isrpoerterLogRequired) {
+			Reporter.log(data, true);
+		}
+	}
+
+	public void logError(String data) {
+		log.error(data);
 		if (isrpoerterLogRequired) {
 			Reporter.log(data, true);
 		}
