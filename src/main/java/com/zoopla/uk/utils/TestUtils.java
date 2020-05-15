@@ -1,6 +1,9 @@
 package com.zoopla.uk.utils;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.util.IOUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -27,32 +31,14 @@ public class TestUtils {
 
 	private static final Logger log = LogManager.getLogger(TestUtils.class);
 
-	// Static variable for page load and implicit wait
-	public static long PAGE_LOAD_TIMEOUT = 30;
-	public static long IMPLICIT_WAIT_0 = 0;
-	public static long IMPLICIT_WAIT_20 = 20;
-	
 	public TestUtils(WebDriver driver) {
-		
+
 	}
-	
-	/**
-	 * 
-	 * @param driver
-	 *            for WebDriver timeout setup
-	 */
-	public void basicTimeoutSetup(WebDriver driver) {
-		driver.manage().deleteAllCookies();
-		driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_20, TimeUnit.SECONDS);
-		log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_20);
-		driver.manage().timeouts().pageLoadTimeout(PAGE_LOAD_TIMEOUT, TimeUnit.SECONDS);
-		log.info("finished basic setup");
-	}
-	
+
 	public Date getCalendar() {
 		return new Date();
 	}
-	
+
 	/**
 	 * 
 	 * @param driver
@@ -61,31 +47,42 @@ public class TestUtils {
 	 */
 	public void explicitlyWaitXpath(WebDriver driver, By element) {
 		try {
-			driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_0, TimeUnit.SECONDS);
-			log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_0);
+			driver.manage().timeouts().implicitlyWait(GlobalConstants.IMPLICIT_WAIT_0, TimeUnit.SECONDS);
+			log.info("Setting to implicitly Wait to " + GlobalConstants.IMPLICIT_WAIT_0);
 			new WebDriverWait(driver, 20).until(ExpectedConditions.presenceOfElementLocated(element));
-			driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_20, TimeUnit.SECONDS);
-			log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_20);
+			driver.manage().timeouts().implicitlyWait(GlobalConstants.IMPLICIT_WAIT_20, TimeUnit.SECONDS);
+			log.info("Setting to implicitly Wait to " + GlobalConstants.IMPLICIT_WAIT_20);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * 
-	 * @param driver accepts webDriver instance as argument 
-	 * @return	returns a boolean value based on visibility condition
-	 * @param titleToMatch	matched with actual title from web page
+	 * @param driver
+	 *            accepts webDriver instance as argument
+	 * @return returns a boolean value based on visibility condition
+	 * @param titleToMatch
+	 *            matched with actual title from web page
 	 */
 	public boolean verifyTitle(WebDriver driver, String titleToMatch) {
 		boolean isDisplayed = false;
-		if (driver.getTitle().equalsIgnoreCase(titleToMatch)) {
-			isDisplayed = true;
-			log.debug("Title match is success and changing status to "+isDisplayed);
+		if (driver != null) {
+			if (driver.getTitle().equalsIgnoreCase(titleToMatch)) {
+				isDisplayed = true;
+				log.debug("Title match is success and changing status to " + isDisplayed);
+			} else {
+				try {
+					throw new NullWebDriverException("Webdriver instance is null, please check");
+				} catch (NullWebDriverException e) {
+					log.error(e.getCause().toString());
+				}
+			}
 		}
+
 		return isDisplayed;
 	}
-	
+
 	/**
 	 * 
 	 * @param driver
@@ -95,34 +92,34 @@ public class TestUtils {
 	 */
 	public void waitForVisibility(WebDriver driver, WebElement element) {
 		try {
-			log.info("Waiting for element visibilty "+element);
-			driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_0, TimeUnit.SECONDS);
-			log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_0);
+			log.info("Waiting for element visibilty " + element);
+			driver.manage().timeouts().implicitlyWait(GlobalConstants.IMPLICIT_WAIT_0, TimeUnit.SECONDS);
+			log.info("Setting to implicitly Wait to " + GlobalConstants.IMPLICIT_WAIT_0);
 			new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOf(element));
-			driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_20, TimeUnit.SECONDS);
-			log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_20);
-		}catch (Exception e) {
+			driver.manage().timeouts().implicitlyWait(GlobalConstants.IMPLICIT_WAIT_20, TimeUnit.SECONDS);
+			log.info("Setting to implicitly Wait to " + GlobalConstants.IMPLICIT_WAIT_20);
+		} catch (Exception e) {
 			log.error(e.getCause().toString());
 		}
 
 	}
 
 	public void waitForLinkToAppear(WebDriver driver, String linkText) {
-		driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_0, TimeUnit.SECONDS);
-		log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_0);
+		driver.manage().timeouts().implicitlyWait(GlobalConstants.IMPLICIT_WAIT_0, TimeUnit.SECONDS);
+		log.info("Setting to implicitly Wait to " + GlobalConstants.IMPLICIT_WAIT_0);
 		new WebDriverWait(driver, 20).until(ExpectedConditions.presenceOfElementLocated(By.linkText(linkText)));
-		driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_20, TimeUnit.SECONDS);
-		log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_20);
+		driver.manage().timeouts().implicitlyWait(GlobalConstants.IMPLICIT_WAIT_0, TimeUnit.SECONDS);
+		log.info("Setting to implicitly Wait to " + GlobalConstants.IMPLICIT_WAIT_0);
 	}
 
 	public void elementToBeclickable(WebDriver driver, WebElement element) {
 		if (driver != null) {
 			try {
-				driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_0, TimeUnit.SECONDS);
-				log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_0);
+				driver.manage().timeouts().implicitlyWait(GlobalConstants.IMPLICIT_WAIT_0, TimeUnit.SECONDS);
+				log.info("Setting to implicitly Wait to " + GlobalConstants.IMPLICIT_WAIT_0);
 				new WebDriverWait(driver, 20).until(ExpectedConditions.elementToBeClickable(element));
-				driver.manage().timeouts().implicitlyWait(IMPLICIT_WAIT_20, TimeUnit.SECONDS);
-				log.info("Setting to implicitly Wait to "+IMPLICIT_WAIT_20);
+				driver.manage().timeouts().implicitlyWait(GlobalConstants.IMPLICIT_WAIT_0, TimeUnit.SECONDS);
+				log.info("Setting to implicitly Wait to " + GlobalConstants.IMPLICIT_WAIT_0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -186,7 +183,7 @@ public class TestUtils {
 	 */
 	public void javaScriptExecutorClick(WebDriver driver, WebElement element) {
 		JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-		jsExecutor.executeScript("arguments[0].click();", element);		
+		jsExecutor.executeScript("arguments[0].click();", element);
 		log.info("Completed javaScriptExecutor click operation");
 	}
 
@@ -435,23 +432,46 @@ public class TestUtils {
 		options.setProfile(profile);
 		options.setCapability(FirefoxDriver.PROFILE, profile);
 	}
-	
+
 	/**
 	 * 
-	 * @param url accepts URL in String format 
-	 * @param whichPartOfArray	After splitting the Url with "?", which part of String[] is required for further processing 
-	 * @return return a string. 
+	 * @param url
+	 *            accepts URL in String format
+	 * @param whichPartOfArray
+	 *            After splitting the Url with "?", which part of String[] is
+	 *            required for further processing
+	 * @return return a string.
 	 */
 	public String splitAndExtractID(String url, int whichPartOfArray) {
-		String finalID=null;
+		String finalID = null;
 		try {
-			String[] part=url.split("\\?");
-			finalID=part[whichPartOfArray].replaceAll("\\D","");
-			log.debug("Final ID is "+finalID);
-		}catch (Exception e) {
+			String[] part = url.split("\\?");
+			finalID = part[whichPartOfArray].replaceAll("\\D", "");
+			log.debug("Final ID is " + finalID);
+		} catch (Exception e) {
 			log.error(e.getCause().toString());
 		}
 		return finalID;
 	}
-	
+
+	/**
+	 * 
+	 * @param screenShotLocation
+	 *            location where screen shot will be saved.
+	 * @return a string format of image.
+	 */
+	public static String generateBase64Img(String screenShotLocation) {
+		String base64Img = null;
+		try {
+			InputStream inputStream = new FileInputStream(screenShotLocation);
+			// Returns an array of bytes from input stream
+			byte[] imageInBytes = IOUtils.toByteArray(inputStream);
+			// Encodes a byte array to String
+			base64Img = Base64.getEncoder().encodeToString(imageInBytes);
+		} catch (Exception e) {
+			log.error("Error in encoding file location");
+			log.error(e.getStackTrace());
+		}
+		return base64Img;
+	}
 }

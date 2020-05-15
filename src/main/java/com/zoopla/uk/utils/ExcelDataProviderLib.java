@@ -13,7 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.testng.annotations.DataProvider;
 
-import com.zoopla.uk.base.TestBase;
+import com.zoopla.uk.testbase.TestBase;
 
 /**
  * 
@@ -38,8 +38,8 @@ public class ExcelDataProviderLib extends TestBase {
 	public Object[][] getDataFromExcel() {
 		try {
 			log.debug("+++++++++++++++++++ Start of Data Provider Library +++++++++++++++++++");
-			String filePath = System.getProperty("user.dir") + ConfigFileRead.readConfigFile("excelfilepath");
-			String sheetName = ConfigFileRead.readConfigFile("sheetname");
+			String filePath = System.getProperty("user.dir") + ConfigFileRead.readkey("excelfilepath");
+			String sheetName = ConfigFileRead.readkey("sheetname");
 			fis = new FileInputStream(filePath);
 			wb = WorkbookFactory.create(fis);
 			Sheet sh = wb.getSheet(sheetName);

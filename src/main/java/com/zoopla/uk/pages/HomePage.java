@@ -9,7 +9,8 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Reporter;
 
-import com.zoopla.uk.base.TestBase;
+import com.zoopla.uk.drivers.InitializeDriver;
+import com.zoopla.uk.testbase.TestBase;
 import com.zoopla.uk.utils.TestUtils;
 
 public class HomePage extends TestBase {
@@ -45,22 +46,31 @@ public class HomePage extends TestBase {
 
 	public SearchResultPage enterSearchText(WebDriver driver, String searchString) {
 		log.info("Inside enterSearchText method");
-		if (getCookieTitleHeaderTxt().getText().equalsIgnoreCase("Your cookie preferences")) {
-			log.debug("Cookie preferences form visible");
-			// getCookieTailoredAdvertisingBtn().click();
-			if (getAcceptCookiesBtn().isEnabled()) {
-				log.info("Element is enabled");
-				testUtils.javaScriptExecutorClick(driver, getAcceptCookiesBtn());
+		try {
+			if (getCookieTitleHeaderTxt().getText().equalsIgnoreCase("Your cookie preferences")) {
+				log.debug("Cookie preferences form visible");
+				// getCookieTailoredAdvertisingBtn().click();
+				if (getAcceptCookiesBtn().isEnabled()) {
+					log.info("Element is enabled");
+					testUtils.javaScriptExecutorClick(driver, getAcceptCookiesBtn());
+				}
+				testUtils.javaScriptExecutorClick(driver, getSearchBox());
+				getSearchBox().sendKeys(searchString, Keys.ENTER);
+				logDebug("Completed search operation");
 			}
-			testUtils.javaScriptExecutorClick(driver, getSearchBox());
-			getSearchBox().sendKeys(searchString, Keys.ENTER);
-			logDebug("Completed search operation");
+		} catch (Exception e) {
+			log.error("Failed in enterSearchText \n " + e.getCause().toString());
 		}
+
 		return new SearchResultPage(driver);
 	}
 
-	public void logDebug(String data) {
-		log.info(data);
-		Reporter.log(data, true);
+	public static void logDebug(String data) {
+		if (log.isDebugEnabled()) {
+			log.debug(data);
+			if (InitializeDriver.isrporterLogRequired) {
+				Reporter.log(data, true);
+			}
+		}
 	}
 }

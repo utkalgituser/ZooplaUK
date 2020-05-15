@@ -17,7 +17,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.testng.Reporter;
 
-import com.zoopla.uk.base.TestBase;
+import com.zoopla.uk.testbase.TestBase;
 
 public class ScreenShotLib extends TestBase {
 
@@ -27,8 +27,7 @@ public class ScreenShotLib extends TestBase {
 
 	static {
 		try {
-			// getProperty --> Gets the system property indicated by the
-			// specified key.
+			// getProperty --> Gets the system property indicated by the specified key.
 			// getAbsoluteFile --> Returns the absolute form of this abstract
 			// pathname. Equivalent to new File(this.getAbsolutePath())
 			screenshotFolder = new File(System.getProperty("user.dir")).getAbsoluteFile()
@@ -104,9 +103,8 @@ public class ScreenShotLib extends TestBase {
 			Reporter.log("<a href='" + destFile.getAbsolutePath() + "'><img src='" + destFile.getAbsolutePath()
 					+ "'height='100''width='100'/></a>");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			log.error("error in taking screen shot");
-			e.printStackTrace();
+			log.error("Error in taking screen shot, please check");
+			log.error(e.getCause().toString());
 		}
 		return destFile.toString();
 	}

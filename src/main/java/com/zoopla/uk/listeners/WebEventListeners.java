@@ -1,4 +1,4 @@
-package com.zoopla.uk.utils;
+package com.zoopla.uk.listeners;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,7 +9,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.testng.Reporter;
 
-import com.zoopla.uk.base.TestBase;
+import com.zoopla.uk.drivers.InitializeDriver;
+import com.zoopla.uk.testbase.TestBase;
 
 /**
  * @author UTKAL
@@ -160,14 +161,14 @@ public class WebEventListeners extends TestBase implements WebDriverEventListene
 
 	public void logInfo(String data) {
 		log.info(data);
-		if (isrpoerterLogRequired) {
+		if (InitializeDriver.isrporterLogRequired) {
 			Reporter.log(data);
 		}
 	}
 	
 	public void logDebug(String data) {
 		log.info(data);
-		if (isrpoerterLogRequired) {
+		if (InitializeDriver.isrporterLogRequired) {
 			Reporter.log(data);
 		}
 	}

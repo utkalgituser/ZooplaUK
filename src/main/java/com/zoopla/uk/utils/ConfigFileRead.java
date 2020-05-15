@@ -26,7 +26,7 @@ public class ConfigFileRead {
 		log.info("Config file path is " + configFile);
 	}
 
-	public static String readConfigFile(String key) {
+	public static String readkey(String key) {
 		String value = "";
 		try {
 			prop = new Properties();

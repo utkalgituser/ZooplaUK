@@ -13,7 +13,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import com.zoopla.uk.base.TestBase;
+import com.zoopla.uk.testbase.TestBase;
 import com.zoopla.uk.utils.TestUtils;
 
 /**
@@ -47,26 +47,33 @@ public class SearchResultPage extends TestBase {
 
 	/**
 	 * 
-	 * @param driver   accepts webDriver instance.
-	 * @param areaName accepts area name which needs to be searched.
+	 * @param driver
+	 *            accepts webDriver instance.
+	 * @param areaName
+	 *            accepts area name which needs to be searched.
 	 * @return returns boolean value based on if text found.
 	 */
 	public boolean verifySearchResultHeaderText(WebDriver driver, String areaName) {
 		boolean isFound = false;
-		areaName = areaName.substring(0, 1).toUpperCase() + areaName.substring(1, areaName.length());
-		System.out.println("New area Name " + areaName);
-		if (getSearchResultHeaderTxt().getText().contains(areaName)) {
-			isFound = true;
-			log.info("Area name found in header text, so setting the boolean value to true.");
-		} else {
-			log.error("Area name MISSING in header text, so CHECK FAILED.");
+		try {
+			areaName = areaName.substring(0, 1).toUpperCase() + areaName.substring(1, areaName.length());
+			System.out.println("New area Name " + areaName);
+			if (getSearchResultHeaderTxt().getText().contains(areaName)) {
+				isFound = true;
+				log.info("Area name found in header text, so setting the boolean value to true.");
+			} else {
+				log.error("Area name MISSING in header text, so CHECK FAILED.");
+			}
+		} catch (Exception e) {
+			log.error(e.getCause().toString());
 		}
 		return isFound;
 	}
 
 	/**
 	 * 
-	 * @param driver accepts driver instance.
+	 * @param driver
+	 *            accepts driver instance.
 	 * @return boolean value in case able to get all the price list
 	 */
 	public boolean getAllPropPrices(WebDriver driver) {
@@ -74,17 +81,21 @@ public class SearchResultPage extends TestBase {
 		List<WebElement> prices = driver.findElements(By.xpath(propPricesXpath));
 		log.debug("Price list size is " + prices.size());
 		List<Integer> priceList = new ArrayList<Integer>();
-		for (WebElement element : prices) {
-			String priceWithCurrency = element.getText();
-			String priceWithoutCurrency = priceWithCurrency.replaceAll("\\D", "");
-			log.debug("priceWithoutCurrency is " + priceWithoutCurrency);
-			if (priceWithoutCurrency != null && !priceWithoutCurrency.equalsIgnoreCase("")) {
-				priceList.add(Integer.parseInt(priceWithoutCurrency));
+		try {
+			for (WebElement element : prices) {
+				String priceWithCurrency = element.getText();
+				String priceWithoutCurrency = priceWithCurrency.replaceAll("\\D", "");
+				log.debug("priceWithoutCurrency is " + priceWithoutCurrency);
+				if (priceWithoutCurrency != null && !priceWithoutCurrency.equalsIgnoreCase("")) {
+					priceList.add(Integer.parseInt(priceWithoutCurrency));
+				}
+				// To sort a list in ascending order using sort method available in Collections
+				// class
+				Collections.sort(priceList);
+				isSame = true;
 			}
-			// To sort a list in ascending order using sort method available in Collections
-			// class
-			Collections.sort(priceList);
-			isSame = true;
+		} catch (Exception e) {
+			log.error(e.getCause().toString());
 		}
 		log.debug("Price list after sort is " + priceList);
 		return isSame;
@@ -92,11 +103,15 @@ public class SearchResultPage extends TestBase {
 
 	/**
 	 * 
-	 * @param driver                accepts driver instance
-	 * @param propertylistingnumber Accepts integer value for searching property
-	 *                              from the given search list.
-	 * @param listingHrefs			ConcurrentHashMap is used to update the collection while it's on use. 
-	 * @return 						returns IndividualPropertyPage page instance
+	 * @param driver
+	 *            accepts driver instance
+	 * @param propertylistingnumber
+	 *            Accepts integer value for searching property from the given search
+	 *            list.
+	 * @param listingHrefs
+	 *            ConcurrentHashMap is used to update the collection while it's on
+	 *            use.
+	 * @return returns IndividualPropertyPage page instance
 	 */
 	public IndividualPropertyPage clickOnPropPriceforPropDetails(WebDriver driver, String propertylistingnumber,
 			Map<String, String> listingHrefs) {
@@ -112,6 +127,10 @@ public class SearchResultPage extends TestBase {
 			log.debug("listingHrefs maps after addition is " + listingHrefs);
 			testUtils.javaScriptExecutorClick(driver, priceLink);
 		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+			log.error(e.getStackTrace());
+			log.error("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 			log.error(e.getCause().toString());
 		}
 		return new IndividualPropertyPage(driver);
