@@ -42,7 +42,7 @@ public class SearchPropertyTest extends TestBase {
 		try {
 			setUp();
 			SoftAssert sa = new SoftAssert();
-			sa.assertTrue(testUtils.verifyTitle(DriverManager.getDriver(), ConfigFileRead.readkey("homepage_title")));
+			sa.assertTrue(testUtils.verifyTitle(DriverManager.getDriver(), ConfigFileRead.readkey("homepage_title")),"Title check failed");
 			searchResultPage = homePage.enterSearchText(DriverManager.getDriver(), areaName);
 			sa.assertTrue(searchResultPage.verifySearchResultHeaderText(DriverManager.getDriver(), areaName));
 			sa.assertAll();			
@@ -56,7 +56,7 @@ public class SearchPropertyTest extends TestBase {
 	public void searchPropertyAndPrintAllPricesTest(String areaName, String propertylistingnumber) {
 		setUp();
 		SoftAssert sa = new SoftAssert();
-		sa.assertTrue(testUtils.verifyTitle(DriverManager.getDriver(), ConfigFileRead.readkey("homepage_title")));
+		sa.assertTrue(testUtils.verifyTitle(DriverManager.getDriver(), ConfigFileRead.readkey("homepage_title")),"Title check failed");
 		searchResultPage = homePage.enterSearchText(DriverManager.getDriver(), areaName);
 		sa.assertTrue(searchResultPage.verifySearchResultHeaderText(DriverManager.getDriver(), areaName));
 		sa.assertTrue(searchResultPage.getAllPropPrices(DriverManager.getDriver()));

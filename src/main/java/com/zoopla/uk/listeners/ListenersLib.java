@@ -19,18 +19,22 @@ import com.zoopla.uk.utils.TestUtils;
 
 public class ListenersLib extends TestBase implements ITestListener {
 
-	private String testCaseName;
+	private static String testCaseName;
 	TestUtils testUtils;
 	private static final Logger log = LogManager.getLogger(ListenersLib.class);
 
 	public void setTestCaseName(String testCaseName) {
-		this.testCaseName = testCaseName;
+		ListenersLib.testCaseName = testCaseName;
 	}
-
+	
+	public static String getTestCaseName() {
+		return testCaseName;
+	}
+	
 	public void onTestStart(ITestResult result) {
 		logDebug("************** Test case " + result.getName() + " started ************** \n");
 		testCaseName = result.getMethod().getDescription();
-		logDebug("Test Case Name is " + testCaseName);
+		logDebug("Test Case Description is " + testCaseName);
 		setTestCaseName(testCaseName);
 		ExtentReportManager.setExtentTest(ExtentReport.report.startTest(testCaseName));
 		LogStatus.pass(testCaseName + " started now");
@@ -52,50 +56,42 @@ public class ListenersLib extends TestBase implements ITestListener {
 		 * result.getMethod().getMethodName()); } } catch (Exception e) {
 		 * e.printStackTrace(); log.error("screen shot failed"); }
 		 */
-		LogStatus.pass(result.getMethod().getDescription()+" passed successfully");
+		logDebug(result.getMethod().getDescription() + " passed successfully");
+		LogStatus.pass(result.getMethod().getDescription() + " passed successfully");
 		ExtentReport.report.endTest(ExtentReportManager.getExtentTest());
 	}
 
 	public void onTestFailure(ITestResult result) {
-		LogStatus.fail(result.getMethod().getDescription()+" is failed");
+		logError(result.getMethod().getDescription() + " is failed");
+		LogStatus.fail(result.getMethod().getDescription() + " is failed");
 		LogStatus.fail(result.getThrowable().toString());
-		LogStatus.fail("Failed ", ScreenShotLib.takeScreenShot(DriverManager.getDriver(), result.getMethod().getDescription()));
+		LogStatus.fail("Failed ",
+				ScreenShotLib.takeScreenShot(DriverManager.getDriver(), result.getMethod().getDescription()));
 		ExtentReport.report.endTest(ExtentReportManager.getExtentTest());
-		/*try {
-			if (DriverManager.getDriver() != null) {
-				testUtils = new TestUtils(DriverManager.getDriver());
-				// returns method name
-				String methodName = result.getName();
-				if (!result.isSuccess()) {
-					// File with current date and time
-					File destFile = new File(ScreenShotLib.screenshotFolder + "/failure_screenshot/" + methodName + "_"
-							+ testUtils.getDateformatter().format(testUtils.getCalendar()) + ".png");
-					TakesScreenshot ts = (TakesScreenshot) DriverManager.getDriver();
-					File srcFile = ts.getScreenshotAs(OutputType.FILE);
-					try {
-						FileUtils.copyFile(srcFile, destFile);
-					} catch (IOException e) {
-						log.error(e.getStackTrace().toString());
-					}
-					// this will helps to link the screen shot to the report
-					Reporter.log("<a href='" + destFile.getAbsolutePath() + "'><img src='" + destFile.getAbsolutePath()
-							+ "'height='100''width='100'/></a>");
-					logDebug("Screen shot taken during failue " + destFile);
-					logDebug("Screen shot taken during failue " + destFile);
-					logDebug("test failed " + result.getMethod().getMethodName());
-				} else {
-					throw new NullWebDriverException("Driver instance is null");
-				}
-			}
-		} catch (Exception e) {
-			log.error("Failed to take screenshot.");
-			e.printStackTrace();
-		}
-*/	}
+		/*
+		 * try { if (DriverManager.getDriver() != null) { testUtils = new
+		 * TestUtils(DriverManager.getDriver()); // returns method name String
+		 * methodName = result.getName(); if (!result.isSuccess()) { // File with
+		 * current date and time File destFile = new File(ScreenShotLib.screenshotFolder
+		 * + "/failure_screenshot/" + methodName + "_" +
+		 * testUtils.getDateformatter().format(testUtils.getCalendar()) + ".png");
+		 * TakesScreenshot ts = (TakesScreenshot) DriverManager.getDriver(); File
+		 * srcFile = ts.getScreenshotAs(OutputType.FILE); try {
+		 * FileUtils.copyFile(srcFile, destFile); } catch (IOException e) {
+		 * log.error(e.getStackTrace().toString()); } // this will helps to link the
+		 * screen shot to the report Reporter.log("<a href='" +
+		 * destFile.getAbsolutePath() + "'><img src='" + destFile.getAbsolutePath() +
+		 * "'height='100''width='100'/></a>");
+		 * logDebug("Screen shot taken during failue " + destFile);
+		 * logDebug("Screen shot taken during failue " + destFile);
+		 * logDebug("test failed " + result.getMethod().getMethodName()); } else { throw
+		 * new NullWebDriverException("Driver instance is null"); } } } catch (Exception
+		 * e) { log.error("Failed to take screenshot."); e.printStackTrace(); }
+		 */ }
 
 	public void onTestSkipped(ITestResult result) {
-		logDebug("Test skipped " + result.getMethod().getDescription());
-		LogStatus.skip(result.getMethod().getDescription()+" is skipped");
+		logDebug(result.getMethod().getDescription()+" Test skipped");
+		LogStatus.skip(result.getMethod().getDescription() + " is skipped");
 		ExtentReport.report.endTest(ExtentReportManager.getExtentTest());
 	}
 
@@ -111,12 +107,26 @@ public class ListenersLib extends TestBase implements ITestListener {
 		logDebug("<<<<<<<<<<<<<<<< TEST EXECUTION FINISHED " + context.getEndDate() + " >>>>>>>>>>>>>>>>> ");
 	}
 
+	public void logInfo(String data) {
+		log.info(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data);
+		}
+	}
+
 	public static void logDebug(String data) {
 		if (log.isDebugEnabled()) {
 			log.debug(data);
-			if (InitializeDriver.isrporterLogRequired) {
+			if (InitializeDriver.isreporterLogRequired) {
 				Reporter.log(data, true);
 			}
+		}
+	}
+
+	public static void logError(String data) {
+		log.error(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data, true);
 		}
 	}
 }

@@ -11,8 +11,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.testng.Reporter;
 import org.testng.annotations.DataProvider;
 
+import com.zoopla.uk.drivers.InitializeDriver;
 import com.zoopla.uk.testbase.TestBase;
 
 /**
@@ -79,5 +81,28 @@ public class ExcelDataProviderLib extends TestBase {
 			}
 		}
 		return excelData;
+	}
+
+	public void logInfo(String data) {
+		log.info(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data);
+		}
+	}
+
+	public static void logDebug(String data) {
+		if (log.isDebugEnabled()) {
+			log.debug(data);
+			if (InitializeDriver.isreporterLogRequired) {
+				Reporter.log(data, true);
+			}
+		}
+	}
+
+	public static void logError(String data) {
+		log.error(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data, true);
+		}
 	}
 }

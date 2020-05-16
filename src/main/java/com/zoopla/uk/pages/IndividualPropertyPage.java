@@ -27,7 +27,7 @@ public class IndividualPropertyPage extends TestBase {
 	public String agentTelePhone;
 	public static String listingIDFromURL;
 	public static String listingID;
-	
+
 	@FindBy(css = "a.ui-agent__details>div.ui-agent__text>h4")
 	private WebElement agentNameTxt;
 
@@ -56,16 +56,18 @@ public class IndividualPropertyPage extends TestBase {
 
 	/**
 	 * 
-	 * @param driver       accepts driver instance as argument.
-	 * @param listingHrefs accepts a ConcurrentHashMap as argument which is map
-	 *                     between listingID and Href URL.
+	 * @param driver
+	 *            accepts driver instance as argument.
+	 * @param listingHrefs
+	 *            accepts a ConcurrentHashMap as argument which is map between
+	 *            listingID and Href URL.
 	 * @return boolean value if listing IDs of property is same.
 	 */
 	public boolean verifyProperty(WebDriver driver, Map<String, String> listingHrefs) {
 		boolean isSame = false;
 		try {
 			testUtils.waitForVisibility(driver, agentNameTxt);
-			log.info("Current page title is "+driver.getTitle());
+			log.info("Current page title is " + driver.getTitle());
 			currentUrl = driver.getCurrentUrl();
 			log.debug("Current URL is " + currentUrl);
 			listingID = testUtils.splitAndExtractID(currentUrl, 0);
@@ -88,8 +90,8 @@ public class IndividualPropertyPage extends TestBase {
 		try {
 			agentName = getAgentNameTxt().getText();
 			agentTelePhone = getAgentTelehoneTxt().getText();
-			log.debug("agentName and agentTelePhone from property page are --->>> " + agentName + " , "
-					+ agentTelePhone);
+			log.debug(
+					"agentName and agentTelePhone from property page are --->>> " + agentName + " , " + agentTelePhone);
 			getAgentContactLnk().click();
 		} catch (Exception e) {
 			log.error(e.getCause().toString());

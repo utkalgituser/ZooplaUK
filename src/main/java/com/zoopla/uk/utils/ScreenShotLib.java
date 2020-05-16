@@ -17,6 +17,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.testng.Reporter;
 
+import com.zoopla.uk.drivers.InitializeDriver;
 import com.zoopla.uk.testbase.TestBase;
 
 public class ScreenShotLib extends TestBase {
@@ -31,24 +32,26 @@ public class ScreenShotLib extends TestBase {
 			// getAbsoluteFile --> Returns the absolute form of this abstract
 			// pathname. Equivalent to new File(this.getAbsolutePath())
 			screenshotFolder = new File(System.getProperty("user.dir")).getAbsoluteFile()
-					+ "/src/main/java/com/aricent/seachange/screenshot/";
-			// log("screen shot folder is " + screenshotFolder);
+					+ "\\screenshot\\";
+			logDebug("Screenshot folder creation " + screenshotFolder+" is successful");
 		} catch (SecurityException e) {
-			e.printStackTrace();
-			log.error("Error is creating screen shot directory");
+			logError(e.getStackTrace().toString());;
+			logError("Error is creating screenshot directory");
 		}
 	}
 
-	public static void takeElementScreenShot(WebDriver driver, WebElement ele, String name) {
-		if (name == "") {
-			name = "blank";
+	public static void takeElementScreenShot(WebDriver driver, WebElement ele, String TCname) {
+		logDebug("TCname is -->> "+TCname);
+		if (TCname == "" || TCname==null) {
+			TCname = "blank";
 		}
 		try {
 			testUtils = new TestUtils(driver);
 
 			// create destination file
-			File destFile = new File(screenshotFolder + "/failure_screenshot/" + name + "_"
+			File destFile = new File(screenshotFolder + "\\failure_screenshot\\" + TCname + "_"
 					+ testUtils.getDateformatter().format(testUtils.getCalendar()) + ".png");
+			logDebug("destFile is "+destFile);
 			// Indicates a driver that can capture a screenshot and store it in
 			// different ways. create screenshot variable
 			// Capture the screenshot and store it in the specified location.
@@ -76,36 +79,61 @@ public class ScreenShotLib extends TestBase {
 					+ "'height='100''width='100'/></a>");
 		} catch (WebDriverException e) {
 			e.printStackTrace();
-			log.error("error in taking screen shot");
+			logError("error in taking screen shot");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			log.error("error writing the image to disk");
+			logError("error writing the image to disk");
 			e.printStackTrace();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			log.error("error while taking element ScreenShot");
-			e.printStackTrace();
+			logError("error while taking element ScreenShot");
+			logError(e.getCause().toString());
 		}
 	}
 
-	public static String takeScreenShot(WebDriver driver, String name) {
-		if (name == "") {
-			name = "blank";
+	public static String takeScreenShot(WebDriver driver, String TCname) {
+		logDebug("TCname is -->> "+TCname);
+		if (TCname == "" || TCname==null) {
+			TCname = "blank";
 		}
 		File destFile = null;
 		try {
-			destFile = new File(screenshotFolder + "/failure_screenshot/" + name + "_"
+			destFile = new File(screenshotFolder + "\\failure_screenshot\\" + TCname + "_"
 					+ testUtils.getDateformatter().format(testUtils.getCalendar()) + ".png");
+			logDebug("destFile is "+destFile);
 			TakesScreenshot ts = (TakesScreenshot) driver;
 			File srcFile = ts.getScreenshotAs(OutputType.FILE);
 			FileUtils.copyFile(srcFile, destFile);
 			// this will helps to link the screen shot to the report
 			Reporter.log("<a href='" + destFile.getAbsolutePath() + "'><img src='" + destFile.getAbsolutePath()
 					+ "'height='100''width='100'/></a>");
-		} catch (IOException e) {
-			log.error("Error in taking screen shot, please check");
-			log.error(e.getCause().toString());
+		} catch (Exception e) {
+			logError("Error in taking screen shot, please check");
+			logError(e.getCause().toString());
 		}
 		return destFile.toString();
+	}
+
+	public void logInfo(String data) {
+		log.info(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data);
+		}
+	}
+
+	public static void logDebug(String data) {
+		if (log.isDebugEnabled()) {
+			log.debug(data);
+			if (InitializeDriver.isreporterLogRequired) {
+				Reporter.log(data, true);
+			}
+		}
+	}
+
+	public static void logError(String data) {
+		log.error(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data, true);
+		}
 	}
 }

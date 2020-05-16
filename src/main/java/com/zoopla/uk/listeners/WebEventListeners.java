@@ -9,15 +9,17 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.testng.Reporter;
 
+import com.zoopla.uk.drivers.DriverManager;
 import com.zoopla.uk.drivers.InitializeDriver;
 import com.zoopla.uk.testbase.TestBase;
+import com.zoopla.uk.utils.ScreenShotLib;
 
 /**
- * @author UTKAL
- * This class is used for generating logs using WebDriverEventListener interface and extends TestBase class. 
+ * @author UTKAL This class is used for generating logs using
+ *         WebDriverEventListener interface and extends TestBase class.
  */
 
-public class WebEventListeners extends TestBase implements WebDriverEventListener{
+public class WebEventListeners extends TestBase implements WebDriverEventListener {
 
 	private static final Logger log = LogManager.getLogger(WebEventListeners.class);
 
@@ -31,7 +33,6 @@ public class WebEventListeners extends TestBase implements WebDriverEventListene
 
 	public void beforeChangeValueOf(WebElement element, WebDriver driver) {
 		logInfo("Value of the:" + element.toString() + " before any changes made");
-
 	}
 
 	public void afterChangeValueOf(WebElement element, WebDriver driver) {
@@ -63,10 +64,9 @@ public class WebEventListeners extends TestBase implements WebDriverEventListene
 	}
 
 	public void onException(Throwable error, WebDriver driver) {
-		// logInfo("Exception occured " + arg0, false);
-		log.error("Exception occured " + error);
+		log.error("Exception occured " + error.toString());
 		try {
-			//ScreenShotLib.takeScreenShot(driver, "");
+			ScreenShotLib.takeScreenShot(DriverManager.getDriver(), ListenersLib.getTestCaseName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -136,7 +136,7 @@ public class WebEventListeners extends TestBase implements WebDriverEventListene
 
 	public void afterGetText(WebElement arg0, WebDriver arg1, String arg2) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void afterSwitchToWindow(String arg0, WebDriver arg1) {
@@ -151,25 +151,34 @@ public class WebEventListeners extends TestBase implements WebDriverEventListene
 
 	public void beforeGetText(WebElement arg0, WebDriver arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void beforeSwitchToWindow(String arg0, WebDriver arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void logInfo(String data) {
 		log.info(data);
-		if (InitializeDriver.isrporterLogRequired) {
+		if (InitializeDriver.isreporterLogRequired) {
 			Reporter.log(data);
 		}
 	}
-	
-	public void logDebug(String data) {
-		log.info(data);
-		if (InitializeDriver.isrporterLogRequired) {
-			Reporter.log(data);
+
+	public static void logDebug(String data) {
+		if (log.isDebugEnabled()) {
+			log.debug(data);
+			if (InitializeDriver.isreporterLogRequired) {
+				Reporter.log(data, true);
+			}
+		}
+	}
+
+	public static void logError(String data) {
+		log.error(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data, true);
 		}
 	}
 }

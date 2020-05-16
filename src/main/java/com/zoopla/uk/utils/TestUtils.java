@@ -26,6 +26,9 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Reporter;
+
+import com.zoopla.uk.drivers.InitializeDriver;
 
 public class TestUtils {
 
@@ -73,8 +76,8 @@ public class TestUtils {
 				log.debug("Title match is success and changing status to " + isDisplayed);
 			} else {
 				try {
-					throw new NullWebDriverException("Webdriver instance is null, please check");
-				} catch (NullWebDriverException e) {
+					// throw new NullWebDriverExceptions("Webdriver instance is null, please check");
+				} catch (Exception e) {
 					log.error(e.getCause().toString());
 				}
 			}
@@ -125,8 +128,8 @@ public class TestUtils {
 			}
 		} else {
 			try {
-				throw new NullWebDriverException("Driver instance is null");
-			} catch (NullWebDriverException e) {
+				//throw new NullWebDriverExceptions("Driver instance is null");
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -362,8 +365,8 @@ public class TestUtils {
 			act.moveToElement(ele).perform();
 		} else {
 			try {
-				throw new NullWebDriverException("Driver instance is null");
-			} catch (NullWebDriverException e) {
+				//throw new NullWebDriverExceptions("Driver instance is null");
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -473,5 +476,28 @@ public class TestUtils {
 			log.error(e.getStackTrace());
 		}
 		return base64Img;
+	}
+
+	public void logInfo(String data) {
+		log.info(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data);
+		}
+	}
+
+	public static void logDebug(String data) {
+		if (log.isDebugEnabled()) {
+			log.debug(data);
+			if (InitializeDriver.isreporterLogRequired) {
+				Reporter.log(data, true);
+			}
+		}
+	}
+
+	public static void logError(String data) {
+		log.error(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data, true);
+		}
 	}
 }

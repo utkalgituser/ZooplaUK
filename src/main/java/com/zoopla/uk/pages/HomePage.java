@@ -65,12 +65,26 @@ public class HomePage extends TestBase {
 		return new SearchResultPage(driver);
 	}
 
+	public void logInfo(String data) {
+		log.info(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data);
+		}
+	}
+
 	public static void logDebug(String data) {
 		if (log.isDebugEnabled()) {
 			log.debug(data);
-			if (InitializeDriver.isrporterLogRequired) {
+			if (InitializeDriver.isreporterLogRequired) {
 				Reporter.log(data, true);
 			}
+		}
+	}
+
+	public static void logError(String data) {
+		log.error(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data, true);
 		}
 	}
 }

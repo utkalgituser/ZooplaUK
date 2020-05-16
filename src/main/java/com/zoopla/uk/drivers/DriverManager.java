@@ -1,9 +1,9 @@
 package com.zoopla.uk.drivers;
 
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
+import org.testng.Reporter;
 
 /**
  * @author UTKAL ThreadLocal provides safer means to run parallel execution, by
@@ -27,6 +27,29 @@ public class DriverManager {
 			threadLocal.set(driver);
 		} catch (Exception e) {
 			log.error(e.getCause().toString());
+		}
+	}
+
+	public void logInfo(String data) {
+		log.info(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data);
+		}
+	}
+
+	public static void logDebug(String data) {
+		if (log.isDebugEnabled()) {
+			log.debug(data);
+			if (InitializeDriver.isreporterLogRequired) {
+				Reporter.log(data, true);
+			}
+		}
+	}
+
+	public static void logError(String data) {
+		log.error(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data, true);
 		}
 	}
 }

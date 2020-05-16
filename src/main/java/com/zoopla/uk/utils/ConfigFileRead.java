@@ -7,6 +7,9 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.testng.Reporter;
+
+import com.zoopla.uk.drivers.InitializeDriver;
 
 public class ConfigFileRead {
 	/**
@@ -49,6 +52,28 @@ public class ConfigFileRead {
 		return value;
 	}
 
+	public void logInfo(String data) {
+		log.info(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data);
+		}
+	}
+
+	public static void logDebug(String data) {
+		if (log.isDebugEnabled()) {
+			log.debug(data);
+			if (InitializeDriver.isreporterLogRequired) {
+				Reporter.log(data, true);
+			}
+		}
+	}
+
+	public static void logError(String data) {
+		log.error(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data, true);
+		}
+	}
 }
 
 class EmptyPropretyException extends Exception {
@@ -60,8 +85,10 @@ class EmptyPropretyException extends Exception {
 
 	/**
 	 * 
-	 * @param key        accepts key which needs to be searched in property file
-	 * @param configFile config file with absolute path
+	 * @param key
+	 *            accepts key which needs to be searched in property file
+	 * @param configFile
+	 *            config file with absolute path
 	 * 
 	 */
 	EmptyPropretyException(String key, String configFile) {
@@ -69,4 +96,26 @@ class EmptyPropretyException extends Exception {
 		log.error("Error is fetching " + key + " ,please verify in " + configFile + " file");
 	}
 
+	public void logInfo(String data) {
+		log.info(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data);
+		}
+	}
+
+	public static void logDebug(String data) {
+		if (log.isDebugEnabled()) {
+			log.debug(data);
+			if (InitializeDriver.isreporterLogRequired) {
+				Reporter.log(data, true);
+			}
+		}
+	}
+
+	public static void logError(String data) {
+		log.error(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data, true);
+		}
+	}
 }

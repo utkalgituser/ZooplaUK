@@ -9,7 +9,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.Reporter;
 
+import com.zoopla.uk.drivers.InitializeDriver;
 import com.zoopla.uk.testbase.TestBase;
 import com.zoopla.uk.utils.TestUtils;
 
@@ -91,5 +93,28 @@ public class AgentsPage extends TestBase {
 			log.error(e.getCause().toString());
 		}
 		return isSame;
+	}
+
+	public void logInfo(String data) {
+		log.info(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data);
+		}
+	}
+
+	public static void logDebug(String data) {
+		if (log.isDebugEnabled()) {
+			log.debug(data);
+			if (InitializeDriver.isreporterLogRequired) {
+				Reporter.log(data, true);
+			}
+		}
+	}
+
+	public static void logError(String data) {
+		log.error(data);
+		if (InitializeDriver.isreporterLogRequired) {
+			Reporter.log(data, true);
+		}
 	}
 }
